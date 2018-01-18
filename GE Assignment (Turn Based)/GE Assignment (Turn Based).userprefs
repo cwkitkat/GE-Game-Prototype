@@ -1,14 +1,14 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\SceneControl.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Player_action.cs">
     <Files>
       <File FileName="Assets\Script\destroyProjectile.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Turn_based_system.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Timer.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\selfDestruct.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Player_action.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Player_action.cs" Line="130" Column="36" />
       <File FileName="Assets\Script\Scoring.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\SceneControl.cs" Line="24" Column="1" />
+      <File FileName="Assets\Script\SceneControl.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
