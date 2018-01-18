@@ -54,6 +54,7 @@
      <Compile Include="Assets\Script\destroyProjectile.cs" />
      <Compile Include="Assets\Script\Player_action.cs" />
      <Compile Include="Assets\Script\SceneControl.cs" />
+     <Compile Include="Assets\Script\SceneSwitch.cs" />
      <Compile Include="Assets\Script\Scoring.cs" />
      <Compile Include="Assets\Script\selfDestruct.cs" />
      <Compile Include="Assets\Script\teleportPlayer1.cs" />

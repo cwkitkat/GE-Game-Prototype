@@ -33,6 +33,8 @@ public class Player_action : MonoBehaviour {
 
 	public GameObject teleporter;
 
+	//public bool isRight;
+
 	void Start ()
 	{
 		turnSystem = GameObject.Find ("Turn-based System").GetComponent<Turn_based_system> ();
@@ -46,10 +48,12 @@ public class Player_action : MonoBehaviour {
 		if (gameObject.tag == "Player1") 
 		{
 			countdown = 20; //first turn is set to be 15, 4s for players to settle down
+			//isRight = true;
 		}
 		if (gameObject.tag == "Player2") 
 		{
 			countdown = 15;
+			//isRight = false;
 		}
 
 		playerText.transform.Translate (-1000, 0, 0);
@@ -97,6 +101,20 @@ public class Player_action : MonoBehaviour {
 			//moving left
 			if (Input.GetKey (moveKey1)) 
 			{
+				//flipping
+				//sadly i cant flip the player character, it affects the pointer rotation flickering between positive and negative rotation
+				//apparently scaling doesnt work as well(the rocket shoots at the wrong direction)
+				//pointer.transform.localScale =  new Vector3(-.3f, -.3f, -.3f);
+				//well, stick with pointer rotation, there's one drawback: cant aim while moving
+				/*int flip = -180;
+				pointer.transform.rotation = Quaternion.Euler (0, flip, 0);*/
+				/*if(isRight == false)
+				{
+					transform.Rotate(0,-180,0, Space.World);
+				}*/
+				//you know what, without flipping it works even better
+
+				//disable moving right while moving left
 				//reference: https://answers.unity.com/questions/320233/temporarily-disable-arrow-keys-how-.html
 				if (isKeyEnable) {
 					isKeyEnable = false;
@@ -111,7 +129,7 @@ public class Player_action : MonoBehaviour {
 					transform.position += Vector3.left * Time.deltaTime * moveSpeed;
 					//transform.Translate(-1f,0f,0f); //this is another way to move
 					//transform.Translate(3f*Input.GetAxis("Horizontal")*Time.deltaTime,0f,0f);
-					moveCount -= 1;
+					moveCount -= 1; //lose stamina
 					stamina.value = moveCount;
 				}
 			}
@@ -119,6 +137,16 @@ public class Player_action : MonoBehaviour {
 			//moving right
 			if (Input.GetKey (moveKey2)) 
 			{
+				//flipping
+				/*int flip = 0;
+				pointer.transform.rotation = Quaternion.Euler (0, flip, 0);*/
+				//Unity's rotation is so difficult to control
+				/*if(isRight)
+				{
+					transform.Rotate(0,-180,0, Space.World);
+				}*/
+
+				//disable moving left while moving right
 				if (isKeyEnable) {
 					isKeyEnable = false;
 				} else 
@@ -170,7 +198,7 @@ public class Player_action : MonoBehaviour {
 				GameObject rocketHolder = Instantiate (teleporter, shootingPoint.transform.position, shootingPoint.transform.rotation) as GameObject;
 
 				//apply wind on force
-				float windRate = turnSystem.windRate;
+				float windRate = turnSystem.gravityRate;
 				force = force + (force * windRate);
 
 				//reference: https://l.facebook.com/l.php?u=https%3A%2F%2Fanswers.unity.com%2Fquestions%2F889787%2Fprojectiles-shoot-at-correct-angle.html&h=ATPS9BYsG2RzZFCMXBTtJ1pArEcAwO8DRbzU23DjaDf2DRsMXb4f-qq9qf6GHk_FLC8jUJciNsSJ8fMe9dHAtBNYO1O2-K0ks5UsKGELmE0fJVO1Bme99-tTY516pgUYKXqkvPaJxfxSng
@@ -178,6 +206,7 @@ public class Player_action : MonoBehaviour {
 
 				//disable multiple shooting
 				shootKey = KeyCode.None;
+				teleportKey = KeyCode.None;
 
 				//refresh conditions
 				Invoke ("refreshStamina", 2.1f);
@@ -213,11 +242,11 @@ public class Player_action : MonoBehaviour {
 				//Quaternion.Euler(new Vector3(0,0,transform.localEulerAngles.z))
 				GameObject rocketHolder = Instantiate (rocket, shootingPoint.transform.position, shootingPoint.transform.rotation) as GameObject;
 
-				//apply wind on force
-				float windRate = turnSystem.windRate;
-				force = force + (force * windRate);
+				//apply gravity on force
+				float gravityRate = turnSystem.gravityRate;
+				force = force - (force * gravityRate);
 
-				//reference: https://l.facebook.com/l.php?u=https%3A%2F%2Fanswers.unity.com%2Fquestions%2F889787%2Fprojectiles-shoot-at-correct-angle.html&h=ATPS9BYsG2RzZFCMXBTtJ1pArEcAwO8DRbzU23DjaDf2DRsMXb4f-qq9qf6GHk_FLC8jUJciNsSJ8fMe9dHAtBNYO1O2-K0ks5UsKGELmE0fJVO1Bme99-tTY516pgUYKXqkvPaJxfxSng
+				//reference: https://answers.unity.com/questions/889787/projectiles-shoot-at-correct-angle.html
 				rocketHolder.GetComponent<Rigidbody> ().AddForce (shootingPoint.transform.right * force,ForceMode.Force); //shootingPoint very important
 
 				//disable multiple shooting
@@ -233,26 +262,12 @@ public class Player_action : MonoBehaviour {
 			//tuning the weapon angle
 			if (Input.GetKey (aimKey1))
 			{
-				if (gameObject.tag == ("Player1")) 
-				{
-					rotateLeft ();
-				}
-				else if (gameObject.tag == ("Player2")) 
-				{
-					rotateRight ();
-				}
+				rotateLeft ();
 			}
-
-			if (Input.GetKey (aimKey2)) 
+			
+			if (Input.GetKey (aimKey2))
 			{
-				if (gameObject.tag == ("Player1")) 
-				{
-					rotateRight ();
-				}
-				else if (gameObject.tag == ("Player2")) 
-				{
-					rotateLeft ();
-				}
+				rotateRight ();
 			}
 		}
 	}
@@ -268,7 +283,7 @@ public class Player_action : MonoBehaviour {
 		turnClass.yourTurn = yourTurn;
 		turnClass.previouslyYourTurn = true;
 		//reset power scale to 200
-		force = 200;
+		force = 0;
 		powerScale.value = force;
 		powerLevel.text = "";
 

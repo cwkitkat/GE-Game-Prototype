@@ -9,9 +9,9 @@ public class Turn_based_system : MonoBehaviour {
 	public List<TurnClass001> playersGroup;
 	public Player_action pa1, pa2;
 
-	public float windRate;
-	public Text windPower;
-	public double windFriction;
+	public float gravityRate;
+	public Text gravity;
+	public double gravityForce;
 
 	void Start () 
 	{
@@ -41,6 +41,8 @@ public class Turn_based_system : MonoBehaviour {
 				pa2.aimKey2 = KeyCode.DownArrow;
 				pa1.shootKey = KeyCode.Space;
 				pa2.shootKey = KeyCode.Space;
+				pa1.teleportKey = KeyCode.Z;
+				pa2.teleportKey = KeyCode.Z;
 				//generating random wind force
 				wind ();
 			}
@@ -71,13 +73,13 @@ public class Turn_based_system : MonoBehaviour {
 
 	void wind ()
 	{
-		//randomize wind force, reference: https://docs.unity3d.com/ScriptReference/Random.Range.html
-		float a = -0.2f;
-		float b = 0.2f;
-		windRate = Random.Range(a, b);
-		windFriction = (double)windRate;
+		//randomize gravity force, reference: https://docs.unity3d.com/ScriptReference/Random.Range.html
+		float a = -0.5f;
+		float b = 0.5f;
+		gravityRate = Random.Range(a, b);
+		gravityForce = (double)gravityRate;
 		//reference: https://forum.unity.com/threads/how-to-round-a-float-to-2-decimal-places.361504/
-		windPower.text = "wind: " + windFriction.ToString("0.00");
+		gravity.text = "Gravity: " + gravityForce.ToString("0.00");
 	}
 }
 
