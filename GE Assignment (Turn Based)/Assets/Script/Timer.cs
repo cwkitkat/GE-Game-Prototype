@@ -12,7 +12,7 @@ public class Timer : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		countdown = 60*5;	//five minutes game time
+		countdown = 60*3;	//five minutes game time
 		//reference for activating UI component: https://answers.unity.com/questions/1151136/sliderenabled-false.html
 		gameStart.gameObject.SetActive(true);
 		Invoke("begin",3f);

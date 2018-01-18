@@ -8,9 +8,13 @@ public class Player_action : MonoBehaviour {
 	public Turn_based_system turnSystem;
 	public TurnClass001 turnClass;
 	public bool yourTurn = false;
-	public KeyCode moveKey1, moveKey2, aimKey1, aimKey2, shootKey;
-	public int moveCount = 0; //restrict player movement
+
+	public KeyCode moveKey1, moveKey2, aimKey1, aimKey2, shootKey, teleportKey;
+	public int moveCount; //restrict player movement
 	public float moveSpeed;
+	public Slider stamina;
+	public GameObject energy;
+	public bool isKeyEnable = false;
 
 	public GameObject pointer; //get reference for the angle to shoot
 	public float pointer_turn_speed;
@@ -26,6 +30,8 @@ public class Player_action : MonoBehaviour {
 	public float countdown;
 	public GameObject playerText;
 	public Text warningText;
+
+	public GameObject teleporter;
 
 	void Start ()
 	{
@@ -46,7 +52,9 @@ public class Player_action : MonoBehaviour {
 			countdown = 15;
 		}
 
-		playerText.transform.Translate (-600, 0, 0);
+		playerText.transform.Translate (-1000, 0, 0);
+
+		moveCount = 300;
 	}
 
 	void Update () 
@@ -55,15 +63,23 @@ public class Player_action : MonoBehaviour {
 
 		if (yourTurn)
 		{
+			//tells player's turn
 			Vector3 _tempTranslation = playerText.transform.localPosition;
-			if(_tempTranslation.x <900)
+			float textSpeed;
+			if (_tempTranslation.x < 90 && _tempTranslation.x > -50) {
+				textSpeed = 100f;
+			} else {
+				textSpeed = 1000f;
+			}
+			if(_tempTranslation.x < 900)
 			{
-				playerText.transform.Translate (300f * Time.deltaTime, 0, 0);
+				playerText.transform.Translate (textSpeed * 2 * Time.deltaTime, 0, 0);
 			}
 
-			//show the player's weapon during his/her turn
+			//show the player's weapon and stamina during his/her turn
 			pointer.SetActive (true);
 			powerController.SetActive (true);
+			energy.SetActive(true);
 
 			//time limit for each player's turn
 			countdown -= Time.deltaTime;
@@ -81,37 +97,105 @@ public class Player_action : MonoBehaviour {
 			//moving left
 			if (Input.GetKey (moveKey1)) 
 			{
-				//the player character moves smoothly now
-				transform.position += Vector3.left * Time.deltaTime * moveSpeed;
-				//transform.Translate(-1f,0f,0f); //this is another way to move
-				//transform.Translate(3f*Input.GetAxis("Horizontal")*Time.deltaTime,0f,0f);
-				moveCount += 1;
+				//reference: https://answers.unity.com/questions/320233/temporarily-disable-arrow-keys-how-.html
+				if (isKeyEnable) {
+					isKeyEnable = false;
+				} else 
+				{
+					isKeyEnable = true;
+				}
+
+				if (isKeyEnable) 
+				{
+					//the player character moves smoothly now
+					transform.position += Vector3.left * Time.deltaTime * moveSpeed;
+					//transform.Translate(-1f,0f,0f); //this is another way to move
+					//transform.Translate(3f*Input.GetAxis("Horizontal")*Time.deltaTime,0f,0f);
+					moveCount -= 1;
+					stamina.value = moveCount;
+				}
 			}
 
 			//moving right
 			if (Input.GetKey (moveKey2)) 
 			{
-				transform.position += Vector3.right * Time.deltaTime * moveSpeed;
-				moveCount += 1;
+				if (isKeyEnable) {
+					isKeyEnable = false;
+				} else 
+				{
+					isKeyEnable = true;
+				}
+
+				if (isKeyEnable) 
+				{
+					transform.position += Vector3.right * Time.deltaTime * moveSpeed;
+					moveCount -= 1;
+					stamina.value = moveCount;
+				}
 			}
 
 			//disable player movement
-			if (moveCount > 300) 
+			if (moveCount <= 0) 
 			{
 				moveKey1 = KeyCode.None;
 				moveKey2 = KeyCode.None;
+				energy.SetActive (false);
 			}
 
-			//Control Power
-			if (Input.GetKey (shootKey)) 
+			//Player teleportation
+			if (Input.GetKey (teleportKey)) 
 			{
 				force += 3;
 				if (force >= 1000) {
 					force = force * 0;
 				}
-				powerScale.value = force;
+
 				float training = force/1000*100;
 				int supersaiyan = (int)training;
+				powerScale.value = training;
+				string over9000 = supersaiyan.ToString();
+				powerLevel.text = over9000;
+			}
+			//switch to next player
+			if (Input.GetKeyUp (teleportKey)) 
+			{
+				//disable player controls
+				moveKey1 = KeyCode.None;
+				moveKey2 = KeyCode.None;
+				aimKey1 = KeyCode.None;
+				aimKey2 = KeyCode.None;
+
+				//set the rocket
+				//Quaternion.Euler(new Vector3(0,0,transform.localEulerAngles.z))
+				GameObject rocketHolder = Instantiate (teleporter, shootingPoint.transform.position, shootingPoint.transform.rotation) as GameObject;
+
+				//apply wind on force
+				float windRate = turnSystem.windRate;
+				force = force + (force * windRate);
+
+				//reference: https://l.facebook.com/l.php?u=https%3A%2F%2Fanswers.unity.com%2Fquestions%2F889787%2Fprojectiles-shoot-at-correct-angle.html&h=ATPS9BYsG2RzZFCMXBTtJ1pArEcAwO8DRbzU23DjaDf2DRsMXb4f-qq9qf6GHk_FLC8jUJciNsSJ8fMe9dHAtBNYO1O2-K0ks5UsKGELmE0fJVO1Bme99-tTY516pgUYKXqkvPaJxfxSng
+				rocketHolder.GetComponent<Rigidbody> ().AddForce (shootingPoint.transform.right * force,ForceMode.Force); //shootingPoint very important
+
+				//disable multiple shooting
+				shootKey = KeyCode.None;
+
+				//refresh conditions
+				Invoke ("refreshStamina", 2.1f);
+
+				//switch to next player's turn after shooting
+				Invoke ("nextPlayer", 2.0f);
+			}
+
+			//Control Power
+			if (Input.GetKey (shootKey)) 
+			{
+				force += 6;
+				if (force >= 4000) {
+					force = force * 0;
+				}
+				float training = force/1000*100;
+				int supersaiyan = (int)training;
+				powerScale.value = training;
 				string over9000 = supersaiyan.ToString();
 				powerLevel.text = over9000;
 			}
@@ -140,7 +224,7 @@ public class Player_action : MonoBehaviour {
 				shootKey = KeyCode.None;
 
 				//refresh conditions
-				moveCount = 0;
+				Invoke ("refreshStamina", 2.1f);
 
 				//switch to next player's turn after shooting
 				Invoke ("nextPlayer", 2.0f);
@@ -173,7 +257,10 @@ public class Player_action : MonoBehaviour {
 		}
 	}
 
-
+	void refreshStamina()
+	{
+		moveCount = 300;
+	}
 
 	void nextPlayer()
 	{
@@ -203,13 +290,16 @@ public class Player_action : MonoBehaviour {
 		}*/
 
 		//refresh player's turn text
-		playerText.transform.Translate (-1200, 0, 0);
+		playerText.transform.Translate (-3200, 0, 0);
 		//hide warning text
 		warningText.gameObject.SetActive(false);
 		//refresh countdown
-		countdown = 15;
+		countdown = 15; 
 
-
+		//refresh stamina value on slider
+		stamina.value = moveCount;
+		//hide stamina bar
+		energy.SetActive(false);
 	}
 
 	void rotateLeft()

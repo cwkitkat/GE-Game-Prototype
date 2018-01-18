@@ -15,6 +15,10 @@ public class destroyProjectile : MonoBehaviour {
 		if (countdown <= 0) {
 			Destroy (gameObject);
 		}
+
+		//make rocket face to the direction it's shot
+		//reference: https://www.youtube.com/watch?v=gP0JdKS1wNg
+		transform.rotation = Quaternion.LookRotation(GetComponent<Rigidbody>().velocity);
 	}
 
 	void OnTriggerEnter (Collider other) 
