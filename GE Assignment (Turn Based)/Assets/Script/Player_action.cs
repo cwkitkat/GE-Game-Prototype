@@ -56,7 +56,8 @@ public class Player_action : MonoBehaviour {
 			//isRight = false;
 		}
 
-		playerText.transform.Translate (-1000, 0, 0);
+		playerText.transform.Translate (-1200, 0, 0);
+		playerText.SetActive (false);
 
 		moveCount = 300;
 	}
@@ -70,6 +71,9 @@ public class Player_action : MonoBehaviour {
 			//tells player's turn
 			Vector3 _tempTranslation = playerText.transform.localPosition;
 			float textSpeed;
+			if (playerText.activeSelf != true) {
+				playerText.SetActive (true);
+			}
 			if (_tempTranslation.x < 90 && _tempTranslation.x > -50) {
 				textSpeed = 100f;
 			} else {
@@ -78,6 +82,10 @@ public class Player_action : MonoBehaviour {
 			if(_tempTranslation.x < 900)
 			{
 				playerText.transform.Translate (textSpeed * 2 * Time.deltaTime, 0, 0);
+			}
+			if (_tempTranslation.x >= 900) 
+			{
+				playerText.SetActive (false);
 			}
 
 			//show the player's weapon and stamina during his/her turn
@@ -305,7 +313,7 @@ public class Player_action : MonoBehaviour {
 		}*/
 
 		//refresh player's turn text
-		playerText.transform.Translate (-3200, 0, 0);
+		playerText.transform.Translate (-3500, 0, 0);
 		//hide warning text
 		warningText.gameObject.SetActive(false);
 		//refresh countdown
