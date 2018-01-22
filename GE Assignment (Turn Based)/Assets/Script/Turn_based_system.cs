@@ -74,8 +74,8 @@ public class Turn_based_system : MonoBehaviour {
 	void wind ()
 	{
 		//randomize gravity force, reference: https://docs.unity3d.com/ScriptReference/Random.Range.html
-		float a = -0.5f;
-		float b = 0.5f;
+		float a = -0.1f;
+		float b = 0.1f;
 		gravityRate = Random.Range(a, b);
 		gravityForce = (double)gravityRate;
 		//reference: https://forum.unity.com/threads/how-to-round-a-float-to-2-decimal-places.361504/

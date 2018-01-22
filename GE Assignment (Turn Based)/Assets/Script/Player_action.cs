@@ -19,10 +19,14 @@ public class Player_action : MonoBehaviour {
 	public GameObject pointer; //get reference for the angle to shoot
 	public float pointer_turn_speed;
 
-	public float force = 200;
+	public float force;
+	public float forceIncrement;
 	public Slider powerScale;
 	public Text powerLevel;
 	public GameObject powerController;
+
+	//new
+	public bool rising = true;
 
 	public GameObject rocket;
 	public Transform shootingPoint;
@@ -60,6 +64,8 @@ public class Player_action : MonoBehaviour {
 		playerText.SetActive (false);
 
 		moveCount = 300;
+
+		force = 0;
 	}
 
 	void Update () 
@@ -177,22 +183,52 @@ public class Player_action : MonoBehaviour {
 				moveKey2 = KeyCode.None;
 				energy.SetActive (false);
 			}
-
+				
 			//Player teleportation
+			if (Input.GetKeyDown (teleportKey)) 
+			{
+				//if teleport cannot shoot
+				shootKey = KeyCode.None;
+			}
 			if (Input.GetKey (teleportKey)) 
 			{
-				force += 3;
+				//this remains here in case future need an effect like this
+				/*force += 3;
 				if (force >= 1000) {
 					force = force * 0;
-				}
+				}*/
 
-				float training = force/1000*100;
-				int supersaiyan = (int)training;
-				powerScale.value = training;
-				string over9000 = supersaiyan.ToString();
-				powerLevel.text = over9000;
+				//the force will rise until maximum, drop when it reaches to maximum and rise again
+				if (rising == true) 
+				{
+					forceIncrement = 5;
+					force += forceIncrement;
+					float forceFloat = force/2500*100;
+					int forceInt = (int)forceFloat;
+					powerScale.value = forceFloat;
+					string forceToString = forceInt.ToString();
+					powerLevel.text = forceToString;
+					if (force >= 2500) 
+					{
+						rising = false;
+					}
+				}
+				if (rising == false) 
+				{
+					forceIncrement = -5;
+					force += forceIncrement;
+					float forceFloat = force/2500*100;
+					int forceInt = (int)forceFloat;
+					powerScale.value = forceFloat;
+					string forceToString = forceInt.ToString();
+					powerLevel.text = forceToString;
+					if (force <= 0) 
+					{
+						rising = true;
+					}
+				}
 			}
-			//switch to next player
+
 			if (Input.GetKeyUp (teleportKey)) 
 			{
 				//disable player controls
@@ -201,7 +237,7 @@ public class Player_action : MonoBehaviour {
 				aimKey1 = KeyCode.None;
 				aimKey2 = KeyCode.None;
 
-				//set the rocket
+				//set the teleportation projectile
 				//Quaternion.Euler(new Vector3(0,0,transform.localEulerAngles.z))
 				GameObject rocketHolder = Instantiate (teleporter, shootingPoint.transform.position, shootingPoint.transform.rotation) as GameObject;
 
@@ -212,8 +248,7 @@ public class Player_action : MonoBehaviour {
 				//reference: https://l.facebook.com/l.php?u=https%3A%2F%2Fanswers.unity.com%2Fquestions%2F889787%2Fprojectiles-shoot-at-correct-angle.html&h=ATPS9BYsG2RzZFCMXBTtJ1pArEcAwO8DRbzU23DjaDf2DRsMXb4f-qq9qf6GHk_FLC8jUJciNsSJ8fMe9dHAtBNYO1O2-K0ks5UsKGELmE0fJVO1Bme99-tTY516pgUYKXqkvPaJxfxSng
 				rocketHolder.GetComponent<Rigidbody> ().AddForce (shootingPoint.transform.right * force,ForceMode.Force); //shootingPoint very important
 
-				//disable multiple shooting
-				shootKey = KeyCode.None;
+				//disable multiple teleportation
 				teleportKey = KeyCode.None;
 
 				//refresh conditions
@@ -223,18 +258,42 @@ public class Player_action : MonoBehaviour {
 				Invoke ("nextPlayer", 2.0f);
 			}
 
-			//Control Power
+			//Shooting rocket
+			if (Input.GetKeyDown (shootKey)) 
+			{
+				teleportKey = KeyCode.None; //if shoot cannot teleport
+			}
+
 			if (Input.GetKey (shootKey)) 
 			{
-				force += 6;
-				if (force >= 4000) {
-					force = force * 0;
+				if (rising == true) 
+				{
+					forceIncrement = 5;
+					force += forceIncrement;
+					float forceFloat = force/2500*100;
+					int forceInt = (int)forceFloat;
+					powerScale.value = forceFloat;
+					string forceToString = forceInt.ToString();
+					powerLevel.text = forceToString;
+					if (force >= 2500) 
+					{
+						rising = false;
+					}
 				}
-				float training = force/1000*100;
-				int supersaiyan = (int)training;
-				powerScale.value = training;
-				string over9000 = supersaiyan.ToString();
-				powerLevel.text = over9000;
+				if (rising == false) 
+				{
+					forceIncrement = -5;
+					force += forceIncrement;
+					float forceFloat = force/2500*100;
+					int forceInt = (int)forceFloat;
+					powerScale.value = forceFloat;
+					string forceToString = forceInt.ToString();
+					powerLevel.text = forceToString;
+					if (force <= 0) 
+					{
+						rising = true;
+					}
+				}
 			}
 
 			//switch to next player
