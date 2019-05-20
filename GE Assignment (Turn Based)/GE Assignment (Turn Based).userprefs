@@ -1,18 +1,18 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\hideFadeImg.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\Player_action.cs">
     <Files>
       <File FileName="Assets\Script\destroyProjectile.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Scoring.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\Timer.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\selfDestruct.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\Player_action.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Player_action.cs" Line="196" Column="12" />
       <File FileName="Assets\Script\Turn_based_system.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\teleportPlayer1.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\teleportPlayer2.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\SceneSwitch.cs" Line="1" Column="1" />
       <File FileName="Assets\Script\BetterLanding.cs" Line="1" Column="1" />
-      <File FileName="Assets\Script\hideFadeImg.cs" Line="10" Column="3" />
+      <File FileName="Assets\Script\hideFadeImg.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
